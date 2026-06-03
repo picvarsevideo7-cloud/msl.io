@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Premium Task Pro - Ludo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <style>
+    :root { 
+        --bg-dark: #050b14; 
+        --text: #ffffff; 
+        --danger: #ef4444; 
+        --c-blue: #0ea5e9; --c-red: #ef4444; --c-green: #22c55e; --c-yellow: #eab308; --safe-grey: #e2e8f0;
+        --primary-orange: #ff7b00;
+        --light-orange: #ffad5c;
+        --primary-blue: #00d2ff;
+        --glass-bg: rgba(17, 34, 64, 0.6);
+        --glass-border: rgba(255, 255, 255, 0.1);
+    }
+    
+    body {
+      background: var(--bg-dark);
+      background-image: radial-gradient(circle at 15% 50%, rgba(0, 210, 255, 0.08), transparent 25%),
+                        radial-gradient(circle at 85% 30%, rgba(255, 123, 0, 0.08), transparent 25%);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      padding: 15px;
+      margin: 0;
+      min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .container {
+      max-width: 420px;
+      margin: auto;
+      padding: 30px 25px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--glass-border);
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    h2, h3 { 
+        color: #fff; 
+        text-align: center; 
+        margin-top: 0; 
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0, 210, 255, 0.3);
+    }
+    
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      color: white;
+      font-size: 15px;
+      box-sizing: border-box;
+      transition: 0.3s;
+    }
+    input:focus { outline: none; border-color: var(--primary-orange); box-shadow: 0 0 12px rgba(255, 123, 0, 0.3); }
+    
+    button {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+    button.orange-btn, .orange-link-btn { 
+        display: block; width: 100%; text-align: center; text-decoration: none;
+        background: linear-gradient(135deg, #ff7b00, #ff4500); color: white; 
+        box-shadow: 0 4px 15px rgba(255, 123, 0, 0.4); 
+    }
+    button.orange-btn:hover, .orange-link-btn:hover { box-shadow: 0 6px 20px rgba(255, 123, 0, 0.6); transform: translateY(-2px); }
+    button.dark-btn, .dark-link-btn { 
+        display: block; width: 100%; text-align: center; text-decoration: none;
+        background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid var(--glass-border); 
+        backdrop-filter: blur(5px);
+    }
+    button.dark-btn:hover, .dark-link-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--primary-blue); }
+    
+    .dashboard-header { text-align: center; padding-bottom: 20px; }
+    .user-greeting { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 5px; }
+    .ref-badge {
+      display: inline-block; background: linear-gradient(135deg, rgba(0, 210, 255, 0.1), rgba(0, 210, 255, 0.05)); 
+      border: 1px solid var(--primary-blue); color: var(--primary-blue);
+      padding: 6px 16px; border-radius: 30px; font-size: 13px; font-weight: 600; cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 210, 255, 0.1);
+    }
+
+    .balance-wrapper {
+      display: flex; gap: 12px; margin-bottom: 25px;
+    }
+    .balance-box {
+      flex: 1;
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+      padding: 20px 10px;
+      border-radius: 16px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.2), 0 4px 15px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .balance-box::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+      background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
+      border-radius: 16px 16px 0 0; opacity: 0.5;
+    }
+    .balance-box:nth-child(2)::before { background: linear-gradient(90deg, transparent, var(--primary-orange), transparent); }
+    
+    .balance-box p { margin: 0; color: #94a3b8; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+    .balance-box h1 { margin: 8px 0 0; color: #ffffff; font-size: 24px; font-weight: 700; }
+    .balance-box:nth-child(1) h1 { color: var(--primary-blue); text-shadow: 0 0 10px rgba(0, 210, 255, 0.3); }
+    .balance-box:nth-child(2) h1 { color: var(--primary-orange); text-shadow: 0 0 10px rgba(255, 123, 0, 0.3); }
+    
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .action-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 20px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+    .action-item:hover {
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-3px);
+      border-color: var(--primary-orange);
+      box-shadow: 0 8px 20px rgba(255, 123, 0, 0.15);
+    }
+    .action-item .icon { 
+        font-size: 28px; display: block; margin-bottom: 12px; 
+        background: -webkit-linear-gradient(#ff7b00, #ffad5c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .action-item:nth-child(1) .icon { background: -webkit-linear-gradient(#00d2ff, #3a7bd5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .action-item:nth-child(3) .icon { background: -webkit-linear-gradient(#22c55e, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .action-item:nth-child(4) .icon { background: -webkit-linear-gradient(#ef4444, #f43f5e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    
+    .action-item .text { font-size: 14px; font-weight: 500; color: #fff; }
+    
+    .history-item { font-size: 13px; border-bottom: 1px solid var(--glass-border); padding: 12px 0; color: #cbd5e1; display: flex; justify-content: space-between; }
+    .history-item b { color: #fff; font-weight: 500; }
+
+    /* Ludo Matchmaking Grid */
+    .match-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .match-box {
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+      border: 1px solid var(--glass-border);
+      padding: 20px 10px;
+      border-radius: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .match-box::before {
+        content: 'VS'; position: absolute; top: -10px; right: -10px; font-size: 40px; opacity: 0.05; font-weight: 800;
+    }
+    .match-box:hover { transform: translateY(-3px); border-color: var(--primary-orange); box-shadow: 0 8px 20px rgba(255, 123, 0, 0.2); }
+    .match-box .m-amount { font-size: 22px; font-weight: 700; color: #fff; display:block; }
+    .match-box .m-text { font-size: 13px; color: var(--primary-orange); font-weight: 500; margin-top: 5px; display: block;}
+
+    /* Ludo Game Styles */
+    @keyframes diceShake { 0% { transform: rotate(0deg); } 25% { transform: rotate(15deg); } 50% { transform: rotate(-15deg); } 75% { transform: rotate(10deg); } 100% { transform: rotate(0deg); } }
+    .board-wrapper { width: 100%; aspect-ratio: 1/1; background: #fff; padding: 4px; border-radius: 8px; box-shadow: 0 0 25px rgba(0, 210, 255, 0.2); position: relative; margin: 0 auto 20px auto; }
+    .ludo-board { width: 100%; height: 100%; display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(15, 1fr); background: #fff; border: 2px solid #000; }
+    .cell { width: 100%; height: 100%; border: 0.5px solid #000; display: flex; justify-content: center; align-items: center; position: relative; margin: -0.5px; }
+    .house { z-index: 2; border: 2px solid #000; position: relative; padding: 10%; }
+    .h-blue { grid-column: 1/7; grid-row: 1/7; background: var(--c-blue); } .h-red { grid-column: 10/16; grid-row: 1/7; background: var(--c-red); } .h-green { grid-column: 1/7; grid-row: 10/16; background: var(--c-green); } .h-yellow { grid-column: 10/16; grid-row: 10/16; background: var(--c-yellow); }
+    .house-inner { background: #fff; width: 100%; height: 100%; border-radius: 15%; box-shadow: 0 4px 6px rgba(0,0,0,0.2); display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10%; padding: 15%; box-sizing: border-box; border: 1px solid #000; }
+    .token-spot { width: 100%; height: 100%; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); box-shadow: inset 2px 2px 5px rgba(0,0,0,0.3); position: relative; }
+    .h-red .token-spot { background: var(--c-red); } .h-green .token-spot { background: var(--c-green); }
+    .bg-red { background-color: var(--c-red); } .bg-green { background-color: var(--c-green); } .bg-blue { background-color: var(--c-blue); } .bg-yellow { background-color: var(--c-yellow); } .safe { background-color: var(--safe-grey); }
+    .star-icon { color: #888; font-size: 10px; position: absolute; z-index: 1; } .start-cell i { color: #fff; opacity: 0.9; font-size: 12px; }
+    .center-home { grid-column: 7/10; grid-row: 7/10; position: relative; background: #fff; border: 2px solid #000; z-index: 2; }
+    .tri { position: absolute; width: 100%; height: 100%; }
+    .tri-top { background: var(--c-red); clip-path: polygon(0 0, 100% 0, 50% 50%); } .tri-right { background: var(--c-yellow); clip-path: polygon(100% 0, 100% 100%, 50% 50%); } .tri-bottom { background: var(--c-blue); clip-path: polygon(0 100%, 100% 100%, 50% 50%); } .tri-left { background: var(--c-green); clip-path: polygon(0 0, 0 100%, 50% 50%); }
+    .crown-win { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: gold; font-size: 24px; z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+    .puck { width: 85%; height: 85%; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 4px 5px rgba(0,0,0,0.5), inset 0 -3px 5px rgba(0,0,0,0.2); z-index: 10; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: all 0.1s ease-in-out; }
+    .pk-green { background: radial-gradient(circle at 35% 35%, #55efc4, #00b894); } .pk-red { background: radial-gradient(circle at 35% 35%, #ff7675, #d63031); }
+    .clickable-token { box-shadow: 0 0 12px 6px var(--primary-orange), inset 0 -3px 5px rgba(0,0,0,0.2) !important; cursor: pointer; animation: pulseClick 1s infinite; z-index: 20; }
+    @keyframes pulseClick { 0% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.15); } 100% { transform: translate(-50%, -50%) scale(1); } }
+
+    .ui-panel { width: 100%; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--glass-border); margin-bottom: 5px; box-sizing: border-box; }
+    .player-info { display: flex; flex-direction: column; align-items: center; color: #fff; font-size: 13px; font-weight: 500; width: 75px; position: relative; transition: 0.3s; text-align: center; }
+    .avatar { width: 50px; height: 50px; border-radius: 14px; background: rgba(255,255,255,0.1); margin-bottom: 8px; border: 2px solid transparent; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff; position: relative; }
+    .active-p .avatar { border-color: var(--primary-orange); box-shadow: 0 0 15px rgba(255, 123, 0, 0.4); transform: scale(1.05); }
+    
+    .dice-wrap { width: 75px; height: 75px; background: linear-gradient(135deg, #fff, #f1f5f9); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--primary-orange); box-shadow: 0 8px 20px rgba(255, 123, 0, 0.3); cursor: pointer; transition: 0.1s; border: 4px solid var(--primary-orange); }
+    .dice-wrap:active { transform: scale(0.95); }
+    .shake-dice { animation: diceShake 0.15s infinite; }
+    .disabled-dice { opacity: 0.6; cursor: not-allowed; background: #cbd5e1; border-color: #94a3b8; color: #64748b; box-shadow: none; }
+
+    .timer-badge { position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; background: var(--danger); color: white; border-radius: 50%; font-size: 11px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-dark); font-weight: bold; z-index: 20; }
+    .hidden { display: none !important; }
+
+    /* Modals */
+    .scratch-modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
+        display: none; justify-content: center; align-items: center; z-index: 1000;
+    }
+    .scratch-card-box {
+        background: var(--glass-bg); padding: 30px; border-radius: 20px;
+        text-align: center; border: 1px solid var(--primary-orange);
+        box-shadow: 0 10px 40px rgba(255, 123, 0, 0.3); position: relative;
+    }
+    .scratch-container {
+        position: relative; width: 250px; height: 120px; margin: 20px auto;
+        border-radius: 12px; overflow: hidden; background: #fff;
+    }
+    .scratch-result {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        display: flex; justify-content: center; align-items: center;
+        font-size: 32px; font-weight: 700; color: var(--primary-green);
+        background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        z-index: 1; pointer-events: none;
+    }
+    canvas#scratchCanvas {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        z-index: 2; cursor: pointer; transition: opacity 0.5s ease;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container" id="authSection" style="display:none;">
+  <h2>🔐 Premium Login</h2>
+  <p style="text-align:center; color:#94a3b8; font-size:13px; margin-bottom:20px;">Play & Win Real Cash</p>
+  <input type="text" id="username" placeholder="Username"/>
+  <input type="text" id="phone" placeholder="Phone Number (017XXXXXX)"/>
+  <input type="password" id="password" placeholder="Password"/>
+  <input type="text" id="refCodeInput" placeholder="Referral Code (Optional)"/>
+  <button class="orange-btn" onclick="register()">Create Account</button>
+  <button class="dark-btn" onclick="login()">Login to Dashboard</button>
+</div>
+
+<div class="container" id="mainDashboard" style="display:none">
+  <div class="dashboard-header">
+    <div class="user-greeting">👋 Hi, <span id="userName"></span></div>
+    <div class="ref-badge" onclick="alert('আপনার রেফার কোড দিয়ে বন্ধুকে অ্যাকাউন্ট খুলতে বলুন। বন্ধু প্রথমবার ডিপোজিট করলেই আপনি পাবেন ২০ টাকা বোনাস!')">
+       🔗 My Ref Code: <span id="myCodeDisplay">...</span>
+    </div>
+  </div>
+
+  <div class="balance-wrapper">
+    <div class="balance-box">
+      <p>Deposit</p>
+      <h1>৳ <span id="depositBalance">0.00</span></h1>
+    </div>
+    <div class="balance-box">
+      <p>Winning</p>
+      <h1>৳ <span id="winningBalance">0.00</span></h1>
+    </div>
+  </div>
+
+  <div class="action-grid">
+    <div class="action-item" onclick="showMatchmakingPage()">
+      <span class="icon"><i class="fas fa-dice"></i></span>
+      <span class="text">Play Ludo</span>
+    </div>
+    <div class="action-item" onclick="showLinksPage()">
+      <span class="icon"><i class="fas fa-headset"></i></span>
+      <span class="text">Support</span>
+    </div>
+    <div class="action-item" onclick="showDepositPage()">
+      <span class="icon"><i class="fas fa-wallet"></i></span>
+      <span class="text">Deposit</span>
+    </div>
+    <div class="action-item" onclick="showWithdrawPage()">
+      <span class="icon"><i class="fas fa-hand-holding-usd"></i></span>
+      <span class="text">Withdraw</span>
+    </div>
+  </div>
+  
+  <button class="dark-btn" onclick="showHistoryPage()" style="margin-top: 20px;"><i class="fas fa-receipt"></i> Transaction History</button>
+  <button class="dark-btn" onclick="logout()" style="margin-top: 10px; border-color: rgba(239, 68, 68, 0.3); color: #f87171;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+</div>
+
+<div class="scratch-modal-overlay" id="scratchModal">
+    <div class="scratch-card-box">
+        <h2 style="color:var(--primary-orange); margin-bottom:5px;">🎁 Daily Bonus!</h2>
+        <p style="color:#fff; font-size:14px; margin-top:0;">Day <span id="streakDay"></span> - Scratch to Win up to ৳500</p>
+        
+        <div class="scratch-container">
+            <div class="scratch-result" id="scratchResultText">৳ 0</div>
+            <canvas id="scratchCanvas"></canvas>
+        </div>
+        
+        <p id="scratchMsg" style="color:#94a3b8; font-size:12px; margin-top:10px;">Rub the card slowly to win big rewards!</p>
+        <button class="orange-btn" id="claimBonusBtn" style="display:none;" onclick="claimScratchBonus()">Claim Bonus</button>
+    </div>
+</div>
+
+<div class="scratch-modal-overlay" id="matchResultModal" style="display:none; z-index: 2000;">
+    <div class="scratch-card-box" style="animation: pulseClick 1.5s infinite; border-width: 2px;">
+        <h1 id="resultTitle" style="margin:0; font-size: 30px;">🎉 You Won!</h1>
+        <p id="resultMsg" style="color:#fff; font-size:16px; margin-top: 10px;">You won ৳<span id="resultAmount">0</span></p>
+        <button class="orange-btn" onclick="closeResultModal()" style="margin-top: 20px;">Claim & Home</button>
+    </div>
+</div>
+
+<div class="container" id="linksSection" style="display:none">
+  <h2>🔗 Support & Links</h2>
+  <p style="text-align:center; color:#94a3b8; font-size:14px; margin-bottom: 25px;">Connect with us or watch tutorials</p>
+  
+  <a id="tgBtn" href="#" target="_blank" class="orange-link-btn" style="padding: 16px; margin-bottom: 15px; border-radius: 12px; font-weight: bold;">
+      <i class="fab fa-telegram fa-lg" style="margin-right:8px;"></i> Join Telegram Channel
+  </a>
+  <a id="vidBtn" href="#" target="_blank" class="dark-link-btn" style="padding: 16px; margin-bottom: 15px; border-radius: 12px; font-weight: bold;">
+      <i class="fab fa-youtube fa-lg" style="margin-right:8px; color:#ef4444;"></i> Watch Tutorial Video
+  </a>
+  
+  <button class="dark-btn" onclick="showMainDashboard()" style="margin-top:20px;">⬅ Back to Home</button>
+</div>
+
+<div class="container" id="matchmakingSection" style="display:none">
+  <h2>🎲 Select Board</h2>
+  <p style="text-align:center; color:#94a3b8; font-size:14px; margin-top:-5px;">Choose Entry Fee to Play Speed Ludo</p>
+  
+  <div class="match-grid">
+    <div class="match-box" onclick="startLudoMatch(10)">
+      <span class="m-amount">৳ 10</span><span class="m-text">Win ৳ 19</span>
+    </div>
+    <div class="match-box" onclick="startLudoMatch(20)">
+      <span class="m-amount">৳ 20</span><span class="m-text">Win ৳ 38</span>
+    </div>
+    <div class="match-box" onclick="startLudoMatch(30)">
+      <span class="m-amount">৳ 30</span><span class="m-text">Win ৳ 57</span>
+    </div>
+    <div class="match-box" onclick="startLudoMatch(50)">
+      <span class="m-amount">৳ 50</span><span class="m-text">Win ৳ 95</span>
+    </div>
+    <div class="match-box" onclick="startLudoMatch(100)">
+      <span class="m-amount">৳ 100</span><span class="m-text">Win ৳ 190</span>
+    </div>
+    <div class="match-box" onclick="startLudoMatch(500)">
+      <span class="m-amount">৳ 500</span><span class="m-text">Win ৳ 980</span>
+    </div>
+  </div>
+
+  <div id="findingPlayerMsg" style="display:none; text-align:center; margin-top:20px; background:rgba(255,123,0,0.1); padding:15px; border-radius:12px; border:1px solid rgba(255,123,0,0.3);">
+      <i class="fas fa-circle-notch fa-spin" style="color:var(--primary-orange); font-size: 28px;"></i>
+      <p style="color:#fff; font-weight:600; margin-top:10px;">Finding Opponent...</p>
+  </div>
+
+  <button class="dark-btn" onclick="showMainDashboard()" style="margin-top:20px;">⬅ Back to Home</button>
+</div>
+
+<div class="container" id="ludoGameSection" style="display:none; padding: 20px 15px;">
+    <div style="text-align: center; margin-bottom: 15px; position: relative; z-index: 1;">
+        <h2 style="margin: 0; font-size: 22px;">Speed Ludo</h2>
+        <p style="margin: 2px 0 10px 0; font-size: 13px; color: var(--primary-orange); font-weight:600;">Prize Pool: ৳<span id="matchPrizeDisplay"></span></p>
+        <p style="margin: 0; font-size: 12px; color: #94a3b8;">You vs <b style="color:#fff;" id="header-bot-name">Player</b></p>
+    </div>
+
+    <div class="board-wrapper">
+        <div class="ludo-board" id="board">
+            <div class="house h-blue"><div class="house-inner"></div></div>
+            <div class="house h-red"><div class="house-inner">
+                <div class="token-spot" id="r-base-0"></div><div class="token-spot" id="r-base-1"></div>
+                <div class="token-spot" id="r-base-2"></div><div class="token-spot" id="r-base-3"></div>
+            </div></div>
+            <div class="house h-green"><div class="house-inner">
+                <div class="token-spot" id="g-base-0"></div><div class="token-spot" id="g-base-1"></div>
+                <div class="token-spot" id="g-base-2"></div><div class="token-spot" id="g-base-3"></div>
+            </div></div>
+            <div class="house h-yellow"><div class="house-inner"></div></div>
+            
+            <div class="center-home">
+                <div class="tri tri-top"></div><div class="tri tri-right"></div>
+                <div class="tri tri-bottom"></div><div class="tri tri-left"></div>
+                <i class="fas fa-crown crown-win"></i>
+                
+                <div id="green-finish" style="position:absolute; bottom:5%; left:50%; transform:translateX(-50%); width:80%; height:30%; display:flex; justify-content:center; align-items:center; z-index:15; font-size:22px; font-weight:900; color:var(--c-green); text-shadow: 1px 1px 3px rgba(0,0,0,0.5), -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;"></div>
+                <div id="red-finish" style="position:absolute; top:5%; left:50%; transform:translateX(-50%); width:80%; height:30%; display:flex; justify-content:center; align-items:center; z-index:15; font-size:22px; font-weight:900; color:var(--c-red); text-shadow: 1px 1px 3px rgba(0,0,0,0.5), -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui-panel" style="position: relative; z-index: 1;">
+        <div class="player-info active-p" id="p1-area">
+            <div class="avatar" style="background:var(--c-green);">
+                <i class="fas fa-user"></i>
+                <div id="p1-timer" class="timer-badge hidden">3</div>
+            </div> YOU
+            <div id="p1-misses" style="color:var(--danger); font-size:10px; margin-top:3px; height:12px;"></div>
+        </div>
+        <div class="dice-wrap" id="dice-box" onclick="humanRoll()">
+            <i class="fas fa-dice-three" id="dice-val"></i>
+        </div>
+        <div class="player-info" id="p2-area">
+            <div class="avatar" style="background:var(--c-red);">
+                <i class="fas fa-user"></i>
+                <div id="p2-timer" class="timer-badge hidden">3</div>
+            </div> <span id="bot-name-display">Player</span>
+        </div>
+    </div>
+    
+    <p style="text-align:center; font-size:14px; margin-top: 15px; font-weight: 600; position: relative; z-index: 1;" id="status-msg">Game Loading...</p>
+    
+    <button class="dark-btn" onclick="surrenderMatch()" style="margin-top: 15px; border-color:rgba(239, 68, 68, 0.5); color:#ef4444;"><i class="fas fa-flag"></i> Surrender</button>
+</div>
+
+<div class="container" id="depositSection" style="display:none">
+  <h2>💵 Secure Deposit</h2>
+  <label style="color:#94a3b8; font-size:13px;">Send Money to Admin Bkash/Nagad:</label>
+  <div id="adminNumbers" style="background:rgba(255,255,255,0.05); padding:20px; border-radius:12px; margin:10px 0 20px 0; color:#fff; font-size:16px; font-weight:600; text-align:center; border:1px dashed var(--primary-orange);">
+    Loading...
+  </div>
+  <input type="number" id="depositAmount" placeholder="Amount (৳) (Min 50)"/>
+  <input type="text" id="trxId" placeholder="Transaction ID (TrxID)"/>
+  <button class="orange-btn" onclick="requestDeposit()">Submit Deposit</button>
+  <button class="dark-btn" onclick="showMainDashboard()">⬅ Back</button>
+</div>
+
+<div class="container" id="withdrawSection" style="display:none">
+  <h2>💸 Fast Withdraw</h2>
+  <div style="background:rgba(0, 210, 255, 0.1); padding:15px; border-radius:12px; border:1px solid rgba(0, 210, 255, 0.2); margin-bottom: 20px;">
+      <p id="minWithdrawMsg" style="text-align:center; color:#fff; font-size:14px; margin:0; font-weight:600;">Min Withdraw: ৳100</p>
+      <p style="text-align:center; color:#00d2ff; font-size:12px; margin:5px 0 0 0;">(Withdraw from Winning Balance Only)</p>
+  </div>
+  <input type="number" id="withdrawAmount" placeholder="Amount (৳)"/>
+  <input type="text" id="userWalletAddress" placeholder="Bkash/Nagad Number"/>
+  <button class="orange-btn" onclick="requestWithdrawal()">Submit Withdraw</button>
+  <button class="dark-btn" onclick="showMainDashboard()">⬅ Back</button>
+</div>
+
+<div class="container" id="historySection" style="display:none;">
+    <h2>📜 History</h2>
+    <div id="historyList" style="max-height:350px; overflow-y:auto; margin-top:15px; padding-right:5px;"></div>
+    <button class="dark-btn" onclick="showMainDashboard()" style="margin-top:20px;">⬅ Back</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyAoXdB29PjXYVgc3JPBlSAbN50WbhLui2E",
+  authDomain: "task-9682c.firebaseapp.com",
+  databaseURL: "https://task-9682c-default-rtdb.firebaseio.com",
+  projectId: "task-9682c",
+  storageBucket: "task-9682c.firebasestorage.app",
+  messagingSenderId: "940950374326",
+  appId: "1:940950374326:web:48a3b48a900374212ba317"
+};
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
+
+let currentUser = null;
+let userData = null;
+let minWithdrawLimit = 100;
+let cpuWinRate = 50; 
+let dailyBonusChecked = false;
+
+// Scratch Card Variables
+let scratchPrizeAmount = 0;
+let currentStreak = 1;
+let isScratched = false;
+
+db.ref("admin/settings").on("value", snap => {
+  const settings = snap.val();
+  if(settings) {
+    document.getElementById("adminNumbers").innerHTML = `Bkash: <span style="color:var(--primary-orange)">${settings.bkash || '017...'}</span><br>Nagad: <span style="color:var(--primary-orange)">${settings.nagad || '018...'}</span>`;
+    minWithdrawLimit = settings.minWithdraw || 100;
+    document.getElementById("minWithdrawMsg").innerText = `Min Withdraw: ৳${minWithdrawLimit}`;
+    if(settings.telegramLink) document.getElementById("tgBtn").href = settings.telegramLink;
+    if(settings.videoLink) document.getElementById("vidBtn").href = settings.videoLink;
+    if(settings.cpuWinRate !== undefined) cpuWinRate = settings.cpuWinRate;
+  }
+});
+
+function hideAll() {
+  document.getElementById('authSection').style.display = 'none';
+  document.getElementById('mainDashboard').style.display = 'none';
+  document.getElementById('linksSection').style.display = 'none';
+  document.getElementById('depositSection').style.display = 'none';
+  document.getElementById('withdrawSection').style.display = 'none';
+  document.getElementById('historySection').style.display = 'none';
+  document.getElementById('matchmakingSection').style.display = 'none';
+  document.getElementById('ludoGameSection').style.display = 'none';
+  if(ludoTimerInt) clearInterval(ludoTimerInt);
+}
+
+// Auto Login Check
+firebase.auth().onAuthStateChanged(user => {
+    if(user) {
+        currentUser = user;
+        loadUserAndCheckDaily(user.uid);
+        hideAll();
+        document.getElementById('mainDashboard').style.display = 'block';
+    } else {
+        hideAll();
+        document.getElementById('authSection').style.display = 'block';
+    }
+});
+
+function showMainDashboard() { hideAll(); document.getElementById('mainDashboard').style.display = 'block'; }
+function showMatchmakingPage() { 
+    hideAll(); 
+    document.getElementById('matchmakingSection').style.display = 'block'; 
+    const findingMsg = document.getElementById('findingPlayerMsg');
+    findingMsg.style.display = 'none';
+    findingMsg.innerHTML = `
+      <i class="fas fa-circle-notch fa-spin" style="color:var(--primary-orange); font-size: 28px;"></i>
+      <p style="color:#fff; font-weight:600; margin-top:10px;">Finding Opponent...</p>
+    `;
+}
+function showLinksPage() { hideAll(); document.getElementById('linksSection').style.display = 'block'; }
+function showDepositPage() { hideAll(); document.getElementById('depositSection').style.display = 'block'; }
+function showWithdrawPage() { hideAll(); document.getElementById('withdrawSection').style.display = 'block'; }
+function showHistoryPage() { hideAll(); document.getElementById('historySection').style.display = 'block'; loadHistory(); }
+
+function register() {
+  if(localStorage.getItem("device_registered") === "true") return alert("❌ একটি ফোনে একটি অ্যাকাউন্ট সম্ভব।");
+  const u = username.value.trim(), p = password.value, ph = phone.value.trim(), ref = refCodeInput.value.trim();
+  if (!u || !p || !ph) return alert("❗ সব তথ্য দিন।");
+  const email = u + "@app.com", myCode = ph.slice(-6);
+
+  firebase.auth().createUserWithEmailAndPassword(email, p).then(res => {
+    localStorage.setItem("device_registered", "true");
+    
+    let createAcc = (referrerUid) => {
+        db.ref("users/" + res.user.uid).set({ 
+            username: u, phone: ph, balance: 0, depositBalance: 0, winningBalance: 0,
+            myReferralCode: myCode, isBanned: false, referralCount: 0,
+            referredBy: referrerUid || null, refRewardGiven: false, ludoMatchesPlayed: 0
+        });
+        db.ref("referralCodes/" + myCode).set(res.user.uid);
+        alert("✅ সফল! আপনার কোড: " + myCode);
+    };
+
+    if (ref) {
+        db.ref("referralCodes/" + ref).once("value").then(snap => {
+            createAcc(snap.val());
+        });
+    } else {
+        createAcc(null);
+    }
+  }).catch(e => alert(e.message));
+}
+
+function login() {
+  const email = username.value.trim() + "@app.com", p = password.value;
+  firebase.auth().signInWithEmailAndPassword(email, p).catch(e => alert(e.message));
+}
+
+function loadUserAndCheckDaily(uid) {
+  if(!dailyBonusChecked) {
+      db.ref("users/" + uid).once("value", snap => {
+         userData = snap.val();
+         if(userData) {
+             if(userData.isBanned) { alert("🚫 অ্যাকাউন্ট ব্যান।"); logout(); return; }
+             
+             let today = new Date().toLocaleDateString('en-GB');
+             let lastLogin = userData.lastLoginDate || "";
+             let streak = userData.loginStreak || 0;
+             
+             if (lastLogin !== today) {
+                 let yesterday = new Date();
+                 yesterday.setDate(yesterday.getDate() - 1);
+                 let yesterdayStr = yesterday.toLocaleDateString('en-GB');
+                 
+                 if (lastLogin === yesterdayStr) {
+                     streak++;
+                     if(streak > 7) streak = 1; 
+                 } else {
+                     streak = 1;
+                 }
+                 
+                 let eligibleForBonus = userData.hasDeposited === true || (userData.depositBalance && userData.depositBalance > 0);
+                 
+                 if(eligibleForBonus) {
+                     showScratchCard(streak, today);
+                 } else {
+                     db.ref("users/" + uid).update({ lastLoginDate: today, loginStreak: streak });
+                 }
+             }
+             dailyBonusChecked = true;
+             attachUserListener(uid);
+         }
+      });
+  } else {
+      attachUserListener(uid);
+  }
+}
+
+// Scratch Card Logic 
+function showScratchCard(streak, todayDate) {
+    currentStreak = streak;
+    if (streak % 7 === 0) { scratchPrizeAmount = 10; } 
+    else { scratchPrizeAmount = Math.floor(Math.random() * 5) + 1; }
+    
+    isScratched = false;
+    document.getElementById("streakDay").innerText = streak;
+    document.getElementById("scratchResultText").innerText = `৳ ${scratchPrizeAmount}`;
+    document.getElementById("scratchModal").style.display = "flex";
+    document.getElementById("claimBonusBtn").style.display = "none";
+    document.getElementById("scratchMsg").innerText = "Rub the card slowly to win big rewards!"; 
+    
+    initCanvasScratch(todayDate);
+}
+
+function initCanvasScratch(todayDate) {
+    const canvas = document.getElementById("scratchCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 250;
+    canvas.height = 120;
+    canvas.style.opacity = 1;
+
+    let gradient = ctx.createLinearGradient(0, 0, 250, 120);
+    gradient.addColorStop(0, "#475569");
+    gradient.addColorStop(1, "#1e293b");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 18px Poppins";
+    ctx.textAlign = "center";
+    ctx.fillText("Scratch Here", 125, 65);
+
+    let isDrawing = false;
+    let scratchedPixels = 0;
+
+    function getMousePos(e) {
+        let rect = canvas.getBoundingClientRect();
+        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        let clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function scratchAction(e) {
+        if (!isDrawing || isScratched) return;
+        e.preventDefault();
+        let pos = getMousePos(e);
+        
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 10, 0, Math.PI * 2);
+        ctx.fill();
+
+        scratchedPixels++;
+        if (scratchedPixels > 150 && !isScratched) {
+            isScratched = true;
+            canvas.style.opacity = 0;
+            document.getElementById("scratchMsg").innerText = "Congratulations! You won ৳" + scratchPrizeAmount;
+            document.getElementById("claimBonusBtn").style.display = "block";
+            
+            document.getElementById("claimBonusBtn").onclick = function() {
+                claimScratchBonus(todayDate);
+            };
+        }
+    }
+
+    canvas.addEventListener("mousedown", () => { isDrawing = true; });
+    canvas.addEventListener("mousemove", scratchAction);
+    canvas.addEventListener("mouseup", () => { isDrawing = false; });
+    canvas.addEventListener("touchstart", (e) => { isDrawing = true; scratchAction(e); });
+    canvas.addEventListener("touchmove", scratchAction);
+    canvas.addEventListener("touchend", () => { isDrawing = false; });
+}
+
+function claimScratchBonus(todayDate) {
+    if(!isScratched) return;
+    document.getElementById("scratchModal").style.display = "none";
+    
+    let newDep = (userData.depositBalance || 0) + scratchPrizeAmount;
+    db.ref("users/" + currentUser.uid).update({
+        lastLoginDate: todayDate,
+        loginStreak: currentStreak,
+        depositBalance: newDep
+    });
+    
+    db.ref("history/" + currentUser.uid).push({ 
+        type: "Daily Scratch Bonus (Day "+currentStreak+")", 
+        amount: scratchPrizeAmount, 
+        time: new Date().toLocaleString(), 
+        status: "Success" 
+    });
+}
+
+function attachUserListener(uid) {
+  db.ref("users/" + uid).on("value", snap => {
+    userData = snap.val();
+    if (userData) {
+      if(userData.isBanned) { alert("🚫 অ্যাকাউন্ট ব্যান।"); logout(); return; }
+      document.getElementById("userName").innerText = userData.username;
+      document.getElementById("depositBalance").innerText = (userData.depositBalance || 0).toFixed(2);
+      document.getElementById("winningBalance").innerText = (userData.winningBalance || 0).toFixed(2);
+      document.getElementById("myCodeDisplay").innerText = userData.myReferralCode || "N/A";
+
+      // Referral Reward Check (First Deposit) - 20 Taka
+      if (userData.depositBalance > 0 && userData.referredBy && !userData.refRewardGiven) {
+          db.ref("users/" + uid).update({ refRewardGiven: true });
+          db.ref("users/" + userData.referredBy).once("value").then(rSnap => {
+              let rData = rSnap.val();
+              if (rData) {
+                  db.ref("users/" + userData.referredBy).update({
+                      depositBalance: (rData.depositBalance || 0) + 20,
+                      referralCount: (rData.referralCount || 0) + 1
+                  });
+                  db.ref("history/" + userData.referredBy).push({ type: "Referral Bonus (Deposit)", amount: 20, time: new Date().toLocaleString(), status: "Success" });
+              }
+          });
+      }
+    }
+  });
+}
+
+function requestDeposit() {
+  const amt = parseFloat(depositAmount.value), trx = trxId.value;
+  if(amt >= 50 && trx) {
+    db.ref("deposits").push({ userId: currentUser.uid, username: userData.username, amount: amt, trxId: trx, time: new Date().toLocaleString(), status: 'Pending' });
+    alert("✅ রিকুয়েস্ট পাঠানো হয়েছে।"); showMainDashboard();
+  } else {
+      alert("❌ মিনিমাম ডিপোজিট ৫০ টাকা এবং TrxID দিতে হবে।");
+  }
+}
+
+function requestWithdrawal() {
+  const amt = parseFloat(withdrawAmount.value), num = userWalletAddress.value;
+  let winBal = userData.winningBalance || 0;
+  if(amt >= minWithdrawLimit && winBal >= amt) {
+    db.ref("users/" + currentUser.uid).update({ winningBalance: winBal - amt });
+    db.ref("withdrawals").push({ userId: currentUser.uid, username: userData.username, amount: amt, number: num, time: new Date().toLocaleString(), status: 'Pending' });
+    alert("✅ উইথড্র সফল!"); showMainDashboard();
+  } else {
+    alert("❌ আপনার উইনিং ব্যালেন্স কম অথবা আপনি মিনিমাম লিমিট মানেননি।");
+  }
+}
+
+function loadHistory() {
+  db.ref("history/" + currentUser.uid).once("value", snap => {
+    const list = document.getElementById("historyList"); list.innerHTML = "";
+    snap.forEach(child => {
+      const d = child.val();
+      let color = d.amount > 0 ? "var(--c-green)" : "var(--danger)";
+      list.innerHTML = `<div class="history-item">
+          <div><b>${d.type}</b><br><small style="color:#64748b;">${d.time}</small></div>
+          <div style="font-weight:bold; color:${color};">৳${d.amount}</div>
+      </div>` + list.innerHTML;
+    });
+  });
+}
+
+function logout() { firebase.auth().signOut().then(() => location.reload()); }
+
+// ==========================================
+// LUDO GAME LOGIC
+// ==========================================
+const botNames = ['সিয়াম', 'samiya', 'shifa', 'sadiya', 'akash', 'simanta', 'sayma', 'shakil', 'আশিক রহমান', 'gamer.bd', 'ff lover', 'সামির', 'diyaff', 'sinha', 'ludu king', 'ludu lover', 'মাহিম', 'shathi'];
+let currentBotName = "Player";
+let currentMatchAmount = 0;
+
+let audioCtx;
+function playSound(type) {
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    const now = audioCtx.currentTime;
+    
+    if (type === 'click') { 
+        osc.frequency.setValueAtTime(800, now); gain.gain.setValueAtTime(0.3, now); osc.start(); osc.stop(now + 0.05);
+    } else if (type === 'step') { 
+        osc.frequency.setValueAtTime(600, now); osc.frequency.exponentialRampToValueAtTime(300, now + 0.08);
+        gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0, now + 0.08); osc.start(); osc.stop(now + 0.08);
+    } else if (type === 'win') { 
+        [523, 659, 784, 1046].forEach((f, i) => {
+            let o = audioCtx.createOscillator(), g = audioCtx.createGain();
+            o.connect(g); g.connect(audioCtx.destination); o.type = 'triangle'; o.frequency.value = f;
+            g.gain.setValueAtTime(0.2, now + i*0.15); g.gain.linearRampToValueAtTime(0, now + i*0.15 + 0.3);
+            o.start(now + i*0.15); o.stop(now + i*0.15 + 0.3);
+        });
+    }
+}
+
+const P = [[14,7],[13,7],[12,7],[11,7],[10,7],[9,6],[9,5],[9,4],[9,3],[9,2],[9,1],[8,1],[7,1],[7,2],[7,3],[7,4],[7,5],[7,6],[6,7],[5,7],[4,7],[3,7],[2,7],[1,7],[1,8],[1,9],[2,9],[3,9],[4,9],[5,9],[6,9],[7,10],[7,11],[7,12],[7,13],[7,14],[7,15],[8,15],[9,15],[9,14],[9,13],[9,12],[9,11],[9,10],[10,9],[11,9],[12,9],[13,9],[14,9],[15,9],[15,8],[15,7]];
+const GH = [[14,8],[13,8],[12,8],[11,8],[10,8]];
+const RH = [[2,8],[3,8],[4,8],[5,8],[6,8]];
+const safeSpots = [0, 8, 13, 21, 26, 34, 39, 47];
+
+let p1Tokens = [-1, -1, -1, -1];
+let p2Tokens = [-1, -1, -1, -1];
+let validMoves = [];
+let waitingForTokenClick = false;
+let ludoTurn = 0, diceVal = 0, isMoving = false, consecSixes = 0;
+let ludoTimerInt = null, timeLeft = 3;
+let missedTurnsCount = 0;
+const diceIcons = ['fa-dice-one','fa-dice-two','fa-dice-three','fa-dice-four','fa-dice-five','fa-dice-six'];
+
+function buildLudoBoard() {
+    const b = document.getElementById('board');
+    for(let r=1; r<=15; r++){
+        for(let c=1; c<=15; c++){
+            if((r>=7 && r<=9) || (c>=7 && c<=9)) {
+                if(r>=7 && r<=9 && c>=7 && c<=9) continue;
+                let d = document.createElement('div');
+                d.className = 'cell'; d.style.gridRow = r; d.style.gridColumn = c;
+                d.id = `cell-${r}-${c}`; b.appendChild(d);
+            }
+        }
+    }
+    let applyStyle = (r, c, cls, html='') => {
+        let el = document.getElementById(`cell-${r}-${c}`);
+        if(el) { el.className += ' ' + cls; if(html) el.innerHTML = html; }
+    };
+
+    safeSpots.forEach(s => applyStyle(P[s][0], P[s][1], 'safe', '<i class="fas fa-star star-icon"></i>'));
+    applyStyle(14,7, 'bg-green start-cell', '<i class="fas fa-star star-icon" style="color:white;"></i>');
+    applyStyle(2,9, 'bg-red start-cell', '<i class="fas fa-star star-icon" style="color:white;"></i>');
+    applyStyle(7,2, 'bg-blue start-cell', '<i class="fas fa-star star-icon" style="color:white;"></i>');
+    applyStyle(9,14, 'bg-yellow start-cell', '<i class="fas fa-star star-icon" style="color:white;"></i>');
+
+    GH.forEach(p => applyStyle(p[0], p[1], 'bg-green'));
+    RH.forEach(p => applyStyle(p[0], p[1], 'bg-red'));
+    [[8,2],[8,3],[8,4],[8,5],[8,6]].forEach(p => applyStyle(p[0], p[1], 'bg-blue'));
+    [[8,10],[8,11],[8,12],[8,13],[8,14]].forEach(p => applyStyle(p[0], p[1], 'bg-yellow'));
+}
+
+function startLudoMatch(amount) {
+    let depBal = userData.depositBalance || 0;
+    let winBal = userData.winningBalance || 0;
+    
+    // শুধুমাত্র ডিপোজিট ব্যালেন্স চেক করা হচ্ছে
+    if(depBal < amount) return alert("❌ আপনার একাউন্টে পর্যাপ্ত ডিপোজিট ব্যালেন্স নেই।");
+    
+    currentMatchAmount = amount;
+    document.getElementById('findingPlayerMsg').style.display = 'block';
+    
+    let newDep = depBal - amount;
+    let newWin = winBal; // উইনিং ব্যালেন্স অপরিবর্তিত থাকবে
+
+    let matchesPlayed = (userData.ludoMatchesPlayed || 0) + 1;
+
+    db.ref("users/" + currentUser.uid).update({ 
+        depositBalance: newDep, 
+        winningBalance: newWin,
+        ludoMatchesPlayed: matchesPlayed
+    });
+    db.ref("history/" + currentUser.uid).push({ type: "Ludo Match Fee", amount: -amount, time: new Date().toLocaleString(), status: "Success" });
+    
+    let findingTime = Math.floor(Math.random() * 1500) + 1000;
+
+    setTimeout(() => {
+        currentBotName = botNames[Math.floor(Math.random() * botNames.length)];
+        
+        document.getElementById('findingPlayerMsg').innerHTML = `
+            <i class="fas fa-check-circle" style="color:#22c55e; font-size: 34px;"></i>
+            <p style="color:#fff; font-weight:bold; margin-top:10px; font-size:16px;">Opponent Found: <span style="color:var(--primary-orange)">${currentBotName}</span></p>
+            <p style="color:var(--primary-blue); font-size:12px; margin-top:5px;">Match starting...</p>
+        `;
+
+        setTimeout(() => {
+            document.getElementById('header-bot-name').innerText = currentBotName;
+            document.getElementById('bot-name-display').innerText = currentBotName;
+            
+            let adminFee = 0;
+            if(amount === 10) adminFee = 1;
+            else if(amount === 20) adminFee = 2;
+            else if(amount === 30) adminFee = 3;
+            else if(amount === 50) adminFee = 5;
+            else if(amount === 100) adminFee = 10;
+            else if(amount === 500) adminFee = 20;
+
+            let winPrize = (amount * 2) - adminFee;
+            document.getElementById('matchPrizeDisplay').innerText = winPrize;
+            
+            hideAll();
+            document.getElementById('ludoGameSection').style.display = 'block';
+            
+            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            
+            resetLudoGame();
+        }, 1200);
+
+    }, findingTime);
+}
+
+function surrenderMatch() {
+    if(confirm("আপনি কি নিশ্চিত? সারেন্ডার করলে আপনার এন্ট্রি ফি ফেরত পাবেন না!")) {
+        showMainDashboard();
+    }
+}
+
+function resetLudoGame() {
+    if(ludoTimerInt) clearInterval(ludoTimerInt);
+    p1Tokens = [-1, -1, -1, -1];
+    p2Tokens = [-1, -1, -1, -1];
+    ludoTurn = 0; isMoving = false; consecSixes = 0; waitingForTokenClick = false; validMoves = [];
+    missedTurnsCount = 0;
+    updateMissesUI();
+    document.getElementById('dice-val').className = "fas fa-dice-three";
+    document.getElementById('green-finish').innerHTML = "";
+    document.getElementById('red-finish').innerHTML = "";
+    renderTokens(); updateUI();
+}
+
+function updateMissesUI() {
+    let stars = "";
+    for(let i=0; i<missedTurnsCount; i++) stars += "❌ ";
+    document.getElementById('p1-misses').innerText = stars;
+}
+
+function startTimer() {
+    clearInterval(ludoTimerInt); timeLeft = 3; updateTimerUI(); 
+    ludoTimerInt = setInterval(() => {
+        timeLeft--; updateTimerUI();
+        if(timeLeft <= 0) {
+            clearInterval(ludoTimerInt);
+            if(ludoTurn === 0) {
+                // ইউজার টাইমআউট খেলে মিস কাউন্ট বাড়বে
+                missedTurnsCount++;
+                updateMissesUI();
+                
+                if (missedTurnsCount >= 3) {
+                    endGameWithBotWin(true);
+                    return;
+                }
+
+                if(waitingForTokenClick && validMoves.length > 0) {
+                    let randIndex = validMoves[Math.floor(Math.random() * validMoves.length)];
+                    waitingForTokenClick = false;
+                    document.getElementById('status-msg').innerText = "Auto Moving...";
+                    autoMoveToken(randIndex);
+                } else if (!isMoving) {
+                    performRoll();
+                }
+            } else { 
+                nextTurn(); 
+            }
+        }
+    }, 1000);
+}
+
+function updateTimerUI() {
+    document.getElementById('p1-timer').className = ludoTurn === 0 ? 'timer-badge' : 'timer-badge hidden';
+    document.getElementById('p1-timer').innerText = timeLeft;
+    document.getElementById('p2-timer').className = ludoTurn === 1 ? 'timer-badge' : 'timer-badge hidden';
+    document.getElementById('p2-timer').innerText = timeLeft;
+}
+
+function updateUI() {
+    const msg = document.getElementById('status-msg'), dBox = document.getElementById('dice-box');
+    startTimer();
+    if(ludoTurn === 0) {
+        msg.innerText = "Your Turn (Tap Dice)"; msg.style.color = "#4ade80";
+        dBox.classList.remove('disabled-dice');
+        document.getElementById('p1-area').classList.add('active-p');
+        document.getElementById('p2-area').classList.remove('active-p');
+    } else {
+        msg.innerText = currentBotName + " is thinking..."; msg.style.color = "#ef4444";
+        dBox.classList.add('disabled-dice');
+        document.getElementById('p1-area').classList.remove('active-p');
+        document.getElementById('p2-area').classList.add('active-p');
+        
+        // বট রেন্ডম টাইমে চাল দেবে (মানবীয় ভাব)
+        let randomDelay = Math.floor(Math.random() * 2000) + 1000; // 1s to 3s
+        setTimeout(performRoll, randomDelay);
+    }
+}
+
+function humanRoll() { 
+    if(ludoTurn === 0 && !isMoving && !waitingForTokenClick) { 
+        missedTurnsCount = 0; updateMissesUI();
+        performRoll(); 
+    }
+}
+
+function performRoll() {
+    clearInterval(ludoTimerInt); isMoving = true;
+    const dBox = document.getElementById('dice-box'), dIcon = document.getElementById('dice-val');
+    dBox.classList.add('shake-dice');
+    
+    let forcedDice = 0;
+    
+    // Dynamic Win Rate Logic
+    let matchesPlayed = userData.ludoMatchesPlayed || 1;
+    let currentBotWinRate = cpuWinRate; 
+    
+    if (matchesPlayed === 1) currentBotWinRate = 0;         // 1st Match: User wins
+    else if (matchesPlayed === 2) currentBotWinRate = 100;   // 2nd Match: Bot wins
+    else if (matchesPlayed >= 3) currentBotWinRate = 60;     // 3rd+ Match: 60% Bot win
+    
+    let isBotAggressive = (Math.random() * 100) <= currentBotWinRate; 
+
+    if (ludoTurn === 1) { // Bot
+        if (isBotAggressive) {
+            for (let i = 0; i < 4; i++) {
+                let bPos = p2Tokens[i];
+                if (bPos > -1 && bPos < 51) {
+                    let bAbs = (bPos + 26) % 52;
+                    for (let pPos of p1Tokens) {
+                        if (pPos > -1 && pPos < 51) {
+                            let pAbs = pPos; let diff = pAbs - bAbs;
+                            if (diff < 0) diff += 52;
+                            if (diff > 0 && diff <= 6 && !safeSpots.includes(pAbs)) { forcedDice = diff; break; }
+                        }
+                    }
+                }
+                if (forcedDice) break;
+            }
+            if (!forcedDice) {
+                for (let i = 0; i < 4; i++) {
+                    let bPos = p2Tokens[i];
+                    if (bPos > 49 && bPos < 56) {
+                        let needed = 56 - bPos;
+                        if (needed <= 6) { forcedDice = needed; break; }
+                    }
+                }
+            }
+            if (!forcedDice) {
+                let active = p2Tokens.filter(p => p > -1 && p < 56).length;
+                if (active < 2 && p2Tokens.includes(-1)) { forcedDice = 6; }
+            }
+        }
+    } else { // Human 
+        if (!isBotAggressive) {
+            for (let i = 0; i < 4; i++) {
+                let pPos = p1Tokens[i];
+                if (pPos > -1 && pPos < 51) {
+                    let pAbs = pPos;
+                    for (let bPos of p2Tokens) {
+                        if (bPos > -1 && bPos < 51) {
+                            let bAbs = (bPos + 26) % 52; let diff = bAbs - pAbs;
+                            if (diff < 0) diff += 52;
+                            if (diff > 0 && diff <= 6 && !safeSpots.includes(bAbs)) { forcedDice = diff; break; }
+                        }
+                    }
+                }
+                if(forcedDice) break;
+            }
+            if (!forcedDice && Math.random() < 0.35) forcedDice = 6; 
+        }
+    }
+    
+    let count = 0;
+    let anim = setInterval(() => {
+        dIcon.className = `fas ${diceIcons[Math.floor(Math.random()*6)]}`;
+        playSound('click'); count++;
+        if(count > 8) {
+            clearInterval(anim); dBox.classList.remove('shake-dice');
+            
+            if (forcedDice) { 
+                diceVal = forcedDice; 
+            } else { 
+                diceVal = Math.floor(Math.random() * 6) + 1; 
+            }
+
+            if (consecSixes === 2 && diceVal === 6) { diceVal = Math.floor(Math.random() * 5) + 1; }
+
+            dIcon.className = `fas ${diceIcons[diceVal-1]}`;
+            evaluateMove();
+        }
+    }, 80); 
+}
+
+function evaluateMove() {
+    let tokens = ludoTurn === 0 ? p1Tokens : p2Tokens;
+    validMoves = [];
+    
+    for(let i=0; i<4; i++) {
+        let pos = tokens[i];
+        if ((pos === -1 && diceVal === 6) || (pos > -1 && pos + diceVal <= 56)) { validMoves.push(i); }
+    }
+
+    if(validMoves.length === 0) {
+        consecSixes = 0; setTimeout(nextTurn, 500);
+    } else {
+        if(ludoTurn === 1) { 
+            let chosen = -1;
+            
+            let matchesPlayed = userData.ludoMatchesPlayed || 1;
+            let currentBotWinRate = cpuWinRate; 
+            if (matchesPlayed === 1) currentBotWinRate = 0;
+            else if (matchesPlayed === 2) currentBotWinRate = 100;
+            else if (matchesPlayed >= 3) currentBotWinRate = 60;
+            
+            let isSmart = (Math.random() * 100) <= currentBotWinRate; 
+            
+            if (isSmart) {
+                for(let m of validMoves) {
+                    let nextPos = p2Tokens[m] === -1 ? 0 : p2Tokens[m] + diceVal;
+                    if(nextPos > -1 && nextPos < 51) {
+                        let botAbs = (nextPos + 26) % 52;
+                        if(!safeSpots.includes(botAbs)) {
+                            if(p1Tokens.some(pt => pt > -1 && pt < 51 && pt === botAbs)) { chosen = m; break; }
+                        }
+                    }
+                }
+                if(chosen === -1) {
+                    let hm = validMoves.find(m => p2Tokens[m] + diceVal === 56);
+                    if(hm !== undefined) chosen = hm;
+                }
+                if(chosen === -1) {
+                    let active = p2Tokens.filter(p => p > -1 && p < 56).length;
+                    if (diceVal === 6 && active < 2) {
+                        let out = validMoves.find(m => p2Tokens[m] === -1);
+                        if (out !== undefined) chosen = out;
+                    }
+                }
+            }
+
+            if(chosen === -1) {
+                chosen = validMoves[Math.floor(Math.random() * validMoves.length)];
+            }
+
+            // বট একটু ভেবে চাল দেবে
+            let thinkTime = Math.floor(Math.random() * 1500) + 800; // 0.8s to 2.3s
+            setTimeout(() => autoMoveToken(chosen), thinkTime);
+        } else {
+            if(validMoves.length === 1) {
+                setTimeout(() => autoMoveToken(validMoves[0]), 150);
+            } else {
+                waitingForTokenClick = true;
+                document.getElementById('status-msg').innerText = "Select a token to move!";
+                document.getElementById('status-msg').style.color = "#eab308";
+                startTimer();
+                renderTokens();
+            }
+        }
+    }
+}
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function autoMoveToken(tIndex) {
+    let tokens = ludoTurn === 0 ? p1Tokens : p2Tokens;
+    let currentPos = tokens[tIndex];
+    
+    if(currentPos === -1) {
+        tokens[tIndex] = 0; playSound('step'); renderTokens(); await sleep(100);
+    } else {
+        for(let i=1; i<=diceVal; i++) {
+            tokens[tIndex]++; playSound('step'); renderTokens(); await sleep(50);
+        }
+    }
+
+    currentPos = tokens[tIndex];
+
+    if (tokens.every(p => p === 56)) {
+        playSound('win');
+        if(ludoTurn === 0) {
+            let adminFee = 0; let amt = currentMatchAmount;
+            if(amt === 10) adminFee = 1; else if(amt === 20) adminFee = 2; else if(amt === 30) adminFee = 3; else if(amt === 50) adminFee = 5; else if(amt === 100) adminFee = 10; else if(amt === 500) adminFee = 20;
+
+            let winPrize = (amount * 2) - adminFee; let winBal = userData.winningBalance || 0;
+
+            db.ref("users/" + currentUser.uid).update({ winningBalance: winBal + winPrize });
+            db.ref("history/" + currentUser.uid).push({ type: "Ludo Win", amount: winPrize, time: new Date().toLocaleString(), status: "Success" });
+            
+            showWinPopup(winPrize);
+        } else { 
+            showLosePopup();
+        }
+        return;
+    }
+
+    let killedOpponent = false;
+    if(currentPos < 51 && currentPos > -1) {
+        let myAbs = ludoTurn === 0 ? currentPos : (currentPos + 26) % 52;
+        let enemyTokens = ludoTurn === 0 ? p2Tokens : p1Tokens;
+        
+        if(!safeSpots.includes(myAbs)) {
+            for(let i=0; i<4; i++) {
+                let ePos = enemyTokens[i];
+                if(ePos > -1 && ePos < 51) {
+                    let enemyAbs = ludoTurn === 1 ? ePos : (ePos + 26) % 52;
+                    if(myAbs === enemyAbs) {
+                        playSound('click'); enemyTokens[i] = -1; killedOpponent = true;
+                        renderTokens(); await sleep(200); break; 
+                    }
+                }
+            }
+        }
+    }
+
+    let extraTurn = false;
+    if (killedOpponent || currentPos === 56) { extraTurn = true; }
+
+    if(diceVal === 6) { consecSixes++; extraTurn = true; } 
+    else { if (!extraTurn) { consecSixes = 0; } }
+
+    if (extraTurn) { isMoving = false; updateUI(); } 
+    else { consecSixes = 0; nextTurn(); }
+}
+
+function playerTokenClick(tIndex) {
+    if(ludoTurn === 0 && waitingForTokenClick && validMoves.includes(tIndex)) {
+        missedTurnsCount = 0; updateMissesUI();
+        waitingForTokenClick = false; clearInterval(ludoTimerInt);
+        document.getElementById('status-msg').innerText = "Moving...";
+        document.getElementById('status-msg').style.color = "#4ade80";
+        autoMoveToken(tIndex);
+    }
+}
+
+function endGameWithBotWin(dueToTimeout = false) {
+    if(dueToTimeout) {
+        showLosePopup("আপনি ৩ বার চাল মিস করেছেন!");
+    } else {
+        showLosePopup();
+    }
+}
+
+// Popup Functions
+function showWinPopup(amount) {
+    document.getElementById('resultTitle').innerText = "🎉 আপনি জিতেছেন!";
+    document.getElementById('resultTitle').style.color = "#4ade80";
+    document.getElementById('resultMsg').innerHTML = `আপনি ৳<span style="font-size:24px; font-weight:bold; color:var(--primary-orange);">${amount}</span> জিতেছেন।`;
+    document.getElementById('matchResultModal').style.display = 'flex';
+}
+
+function showLosePopup(reason = "") {
+    document.getElementById('resultTitle').innerText = "💔 আপনি হেরেছেন!";
+    document.getElementById('resultTitle').style.color = "#ef4444";
+    let msg = reason ? reason + "<br>বেটার লাক নেক্সট টাইম!" : "বেটার লাক নেক্সট টাইম!";
+    document.getElementById('resultMsg').innerHTML = msg;
+    document.getElementById('matchResultModal').style.display = 'flex';
+}
+
+function closeResultModal() {
+    document.getElementById('matchResultModal').style.display = 'none';
+    showMatchmakingPage();
+}
+
+function nextTurn() { ludoTurn = 1 - ludoTurn; isMoving = false; consecSixes = 0; updateUI(); }
+
+function renderTokens() {
+    // ক্লিয়ার শুধু পিসি বোর্ড, ফিনিশ লাইন ক্লিয়ার হবে না
+    document.querySelectorAll('.puck').forEach(e => e.remove());
+    
+    // ফিনিশ পয়েন্টে থাকা গুটির সংখ্যা গোনা হচ্ছে
+    let greenFinishedCount = p1Tokens.filter(p => p === 56).length;
+    let redFinishedCount = p2Tokens.filter(p => p === 56).length;
+    
+    // ফিনিশ পয়েন্টে গুটির সংখ্যা দেখানো হচ্ছে
+    document.getElementById('green-finish').innerHTML = greenFinishedCount > 0 ? greenFinishedCount : "";
+    document.getElementById('red-finish').innerHTML = redFinishedCount > 0 ? redFinishedCount : "";
+    
+    for(let i=0; i<4; i++) { 
+        renderPuck('green', p1Tokens[i], i); 
+        renderPuck('red', p2Tokens[i], i); 
+    }
+}
+
+function renderPuck(color, pos, tIndex) {
+    // গুটি ৫৬ এ থাকলে আর গুটি রেন্ডার করা হবে না, তা হাইড হয়ে যাবে
+    if(pos === 56) return;
+
+    let el = document.createElement('div'); el.className = `puck pk-${color}`;
+
+    if(color === 'green' && waitingForTokenClick && validMoves.includes(tIndex)) {
+        el.classList.add('clickable-token'); el.onclick = () => playerTokenClick(tIndex);
+    }
+
+    let targetId = '';
+    if(pos === -1) { targetId = color === 'green' ? `g-base-${tIndex}` : `r-base-${tIndex}`; } 
+    else if (pos < 51) {
+        let absPos = color === 'green' ? pos : (pos + 26) % 52; targetId = `cell-${P[absPos][0]}-${P[absPos][1]}`;
+    } else {
+        let path = color === 'green' ? GH : RH; targetId = `cell-${path[pos-51][0]}-${path[pos-51][1]}`;
+    }
+
+    let target = document.getElementById(targetId);
+    if(target) {
+        target.appendChild(el); let pucksInCell = target.querySelectorAll('.puck');
+        if(pos !== -1 && pucksInCell.length > 1) {
+             pucksInCell.forEach((p, idx) => { p.style.transform = `translate(calc(-50% + ${(idx%2===0?-5:5)}px), calc(-50% + ${(idx<2?-5:5)}px)) scale(0.85)`; });
+        } else { el.style.transform = 'translate(-50%, -50%)'; }
+    }
+}
+
+buildLudoBoard();
+
+</script>
+</body>
+</html>
